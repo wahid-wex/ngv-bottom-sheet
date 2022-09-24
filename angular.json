@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ngv-bottom-sheet": {
+      "projectType": "library",
+      "root": "projects/ngv-bottom-sheet",
+      "sourceRoot": "projects/ngv-bottom-sheet/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngv-bottom-sheet/ng-package.json",
+            "tsConfig": "projects/ngv-bottom-sheet/tsconfig.lib.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngv-bottom-sheet/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngv-bottom-sheet/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngv-bottom-sheet/src/test.ts",
+            "tsConfig": "projects/ngv-bottom-sheet/tsconfig.spec.json",
+            "karmaConfig": "projects/ngv-bottom-sheet/karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": "2125c0eb-e8e0-4e7e-8840-128fad6968cd"
+  }
+}

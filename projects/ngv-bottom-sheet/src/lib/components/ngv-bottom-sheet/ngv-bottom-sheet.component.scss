@@ -1,0 +1,105 @@
+%custom-scrollbar {
+  @media (min-width: 812px) {
+    scrollbar-color: #d3dbe1 transparent;
+
+    &::-webkit-scrollbar {
+      height: 14px;
+      width: 14px;
+    }
+
+    &::-webkit-scrollbar-corner {
+      border-radius: 16px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #d3dbe1;
+      border-radius: 16px;
+      border: 4px solid transparent;
+      background-clip: padding-box;
+
+      &:hover {
+        background-color: #2e61f6;
+      }
+
+      &:active {
+        background-color: #2e61f6;
+      }
+
+      &:vertical {
+        min-height: 8px;
+      }
+
+      &:horizontal {
+        min-width: 8px;
+      }
+    }
+  }
+}
+
+.ngv-bottom-sheet {
+  position: fixed;
+  inset: 0;
+
+  .sheet-handler {
+    user-select: none;
+    width: 100%;
+    padding: 15px 10px;
+    cursor: grab;
+
+    &::after {
+      margin: auto;
+      width: 25%;
+      border-radius: 8px;
+      content: '';
+      height: 5px;
+      background: #dfdfdf;
+      display: block;
+    }
+  }
+
+  .ngv-bottom-sheet-content-wrapper {
+    @extend %custom-scrollbar;
+    overflow-y: auto;
+    animation: load-bottom-sheet .2s ease-in-out forwards;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    box-shadow: #f2f5f8 0 -20px 22px -12px;
+    width: 100%;
+    max-height: 90vh;
+    max-width: 99vw;
+    background: #ffffff;
+    z-index: 2;
+  }
+
+  .back-drop {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    &.blur {
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px);
+    }
+
+    &.gray {
+      background-color: rgba(gray, .6);
+    }
+  }
+}
+@keyframes load-bottom-sheet {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}

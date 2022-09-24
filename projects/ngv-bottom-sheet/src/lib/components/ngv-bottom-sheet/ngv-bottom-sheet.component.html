@@ -1,0 +1,20 @@
+<div
+  [id]="componentName"
+  class="ngv-bottom-sheet">
+  <div
+    (click)="close()"
+    [class]="'back-drop ' + options.backDropStyle"
+  ></div>
+  <div
+    [id]="componentName + '-content'"
+    [ngStyle]="{padding: options.space + 'px'}"
+    class="ngv-bottom-sheet-content-wrapper">
+    <div
+      class="sheet-handler"
+      id="sheet-handler"
+    ></div>
+    <div id="container-wrapper">
+      <ng-container #container></ng-container>
+    </div>
+  </div>
+</div>
