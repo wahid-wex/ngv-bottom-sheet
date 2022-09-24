@@ -4,15 +4,13 @@ import { NgvBottomSheetComponent } from './components/ngv-bottom-sheet/ngv-botto
 import { BehaviorSubject, Subject } from 'rxjs';
 import { NGV_BOTTOM_SHEET_CLOSE_TOKEN, NGV_BOTTOM_SHEET_TEMPLATE_TOKEN, NGV_BOTTOM_SHEET_ROUTES_TOKEN } from './classes';
 import { TemplateCarrierType ,NgvRoutesConfig} from './models';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute } from '@angular/router';
+import {  RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
     NgvBottomSheetComponent
   ],
   providers: [
-    ActivatedRoute,
     {
       provide: NGV_BOTTOM_SHEET_TEMPLATE_TOKEN, useFactory: (() => {
         return new BehaviorSubject<TemplateCarrierType>(null);
@@ -26,6 +24,7 @@ import { ActivatedRoute } from '@angular/router';
   ],
   imports: [
     CommonModule,
+    RouterModule.forRoot([])
   ]
 })
 export class NgvBottomSheetModule {
