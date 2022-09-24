@@ -2,26 +2,117 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.1.
 
-## Development server
+## How to use ?
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+* `npm install ngv-bottom-sheet` - to install package in your project.
+* In your AppModule import the NgvBottomSheetModule
+* then in your component use `NgvBottomSheet` to work with that
+```ts
+import { NgvBottomSheetModule } from 'ngv-bottom-sheet';
+imports: [
+    ...
+    NgvBottomSheetModule,
+    ...
+]
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```ts
+import { NgvBottomSheet } from 'ngv-bottom-sheet';
+@Component({
+  selector: 'app-component',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent implements OnInit {
+  bottomSheet = inject(NgvBottomSheet);
+  openBottomSheet(): void {
+    this.bottomSheet.open(MyExampleComponent)
+  }
+}
 
-## Build
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+* you can set some configuration like the below code :
+* `backDropClose` - a boolean value , to be able to close bottom sheet by click to backdrop.
+* `space` - a number value , the space around bottom sheet and content.
+* `backDropStyle` - a string value , could be `none` for default value , `blur` and `gray`.
 
-## Running unit tests
+```ts
+this.bottomSheet.open(MyExampleComponent, {
+  backDropClose: true,
+  space: 16,
+  backDropStyle: 'blur',
+})
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+* as you can see at below code, use can use set a data to use it when bottom sheet opened.
 
-## Running end-to-end tests
+```ts
+this.bottomSheet.open(MyExampleComponent, {
+  data: {
+    userData: {
+      gitHub: 'https://github.com/wahidwex'
+    }
+  }
+})
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+* you can close bottom sheet by use `close('your message')` that could be any type and send a message to close subscriber.
 
-## Further help
+```ts
+this.bottomSheet.open(MyExampleComponent).afterClose().subscribe(closeMessage => {
+  // there will got 'my close message could be any type'
+})
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+// and in the MyExampleComponent you can close it
+ closeAction(): void {
+  this.bottomsheet.close('my close message could be any type')
+}
+```
+
+
+```ts
+import { NgvBottomSheet } from 'ngv-bottom-sheet';
+@Component({
+  selector: 'app-component',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class MyExampleComponent implements OnInit {
+  bottomSheet = inject(NgvBottomSheet);
+  ngOnInit(): void {
+    const data = this.bottomSheet.getData();
+    ...
+  }
+}
+```
+
+## How to open bottom sheet by routes?
+
+* when you want to import the module , which will open your bottom sheet as you want , like below
+```ts
+import { NgvBottomSheetModule } from 'ngv-bottom-sheet';
+imports: [
+    ...
+    NgvBottomSheetModule.setRoutes({
+      options : {
+        backDropClose: true,
+        space: 16,
+        backDropStyle: 'blur',
+      },
+      list: [
+        {
+          fragment: 'article',
+          component: ArticleComponent
+        },
+        {
+          fragment: 'example',
+          component: MyExampleComponent
+        },
+      ],
+    }),
+    ...
+]
+```
+* so when you want to open `MyExampleComponent` you just need to add `example` fragment ...
