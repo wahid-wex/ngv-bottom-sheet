@@ -63,7 +63,6 @@
 
   .ngv-bottom-sheet-content-wrapper {
     @extend %custom-scrollbar;
-    overflow-y: auto;
     animation: load-bottom-sheet .2s ease-in-out forwards;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;

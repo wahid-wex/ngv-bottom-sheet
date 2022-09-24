@@ -25,7 +25,7 @@ import { TemplateCarrierType ,NgvRoutesConfig} from './models';
     CommonModule
   ]
 })
-class NgvBottomSheetModule {
+export class NgvBottomSheetModule {
   static setRoutes(routes: NgvRoutesConfig): ModuleWithProviders<NgvBottomSheetModule> {
     return {
       ngModule: NgvBottomSheetModule,
