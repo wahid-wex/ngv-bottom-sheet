@@ -9,8 +9,4 @@ export interface OverlayModel {
   afterClose(): Observable<any>;
 
   close(e?): void;
-
-  init(name: string): void | string;
-
-  openAutomationByRoutes(): void;
 }

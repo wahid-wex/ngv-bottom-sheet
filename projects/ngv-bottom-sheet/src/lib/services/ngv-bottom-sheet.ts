@@ -15,16 +15,16 @@ export class NgvBottomSheet implements OverlayModel {
    * these three properties help us to inject NgvBottomSheetComponent into the root
    * @class NgvBottomSheetComponent
    */
-  injector = inject(Injector);
-  factory: ComponentFactory<NgvBottomSheetComponent>;
-  componentFactoryResolver = inject(ComponentFactoryResolver);
+  private injector = inject(Injector);
+  private factory: ComponentFactory<NgvBottomSheetComponent>;
+  private componentFactoryResolver = inject(ComponentFactoryResolver);
   /*--------------------------------------------------------------------------------------------------------------------------------------*/
 
   // after close observer
-  afterClose$: Subject<any> = new Subject();
+  private afterClose$: Subject<any> = new Subject();
 
   // list of custom elements that is open
-  componentsOpenedNameList: string[] = [];
+  private componentsOpenedNameList: string[] = [];
 
   /**
    * ---------------------------------------------------------------------------------------------------------------------------------------
@@ -32,8 +32,8 @@ export class NgvBottomSheet implements OverlayModel {
    * @property templateBridge$ closeBridge$
    * @class NgvBottomSheetComponent
    */
-  templateBridge$: BehaviorSubject<TemplateCarrierType> = inject(NGV_BOTTOM_SHEET_TEMPLATE_TOKEN);
-  closeBridge$: Subject<void> = inject(NGV_BOTTOM_SHEET_CLOSE_TOKEN);
+  private templateBridge$: BehaviorSubject<TemplateCarrierType> = inject(NGV_BOTTOM_SHEET_TEMPLATE_TOKEN);
+  private closeBridge$: Subject<void> = inject(NGV_BOTTOM_SHEET_CLOSE_TOKEN);
   /*--------------------------------------------------------------------------------------------------------------------------------------*/
 
   /**
@@ -46,9 +46,9 @@ export class NgvBottomSheet implements OverlayModel {
    * so that we don't have to make redundant iteration
    */
 
-  routesConfig: NgvRoutesConfig = inject(NGV_BOTTOM_SHEET_ROUTES_TOKEN);
-  transformedFragments = {};
-  router = inject(ActivatedRoute);
+  private routesConfig: NgvRoutesConfig = inject(NGV_BOTTOM_SHEET_ROUTES_TOKEN);
+  private transformedFragments = {};
+  private router = inject(ActivatedRoute);
 
   /*--------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -110,7 +110,7 @@ export class NgvBottomSheet implements OverlayModel {
     }, 200);
   }
 
-  init(): string {
+  private init(): string {
     const name = 'ngv-sheet-container-' + Math.floor(Math.random() * 100000);
     this.componentsOpenedNameList.push(name);
     // make a dummy element
@@ -125,7 +125,7 @@ export class NgvBottomSheet implements OverlayModel {
     return name;
   }
 
-  openAutomationByRoutes(): void {
+  private openAutomationByRoutes(): void {
     if (!this.routesConfig.list.length) {
       return;
     }
@@ -133,16 +133,21 @@ export class NgvBottomSheet implements OverlayModel {
     this.openSheetWhenFragmentMatches();
   }
 
-  transformFragments(): void {
+  private transformFragments(): void {
+    const defaultOption = {backDropClose: true, backDropStyle: 'blur'};
+    const userConfig = this.routesConfig.options;
     this.routesConfig.list.map(route => {
-      this.transformedFragments[route.fragment] = route.component;
+      this.transformedFragments[route.fragment] = {
+        component: route.component,
+        option: {...defaultOption , ...userConfig}
+      };
     });
   }
 
-  openSheetWhenFragmentMatches(): void {
+  private openSheetWhenFragmentMatches(): void {
     this.router.fragment.subscribe(fragment => {
       if (this.transformedFragments.hasOwnProperty(fragment)) {
-        this.open(this.transformedFragments[fragment]);
+        this.open(this.transformedFragments[fragment].component, this.transformedFragments[fragment].option);
       }
     });
   }
