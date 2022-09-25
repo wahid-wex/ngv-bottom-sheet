@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { NgvBottomSheetOptionModel } from './';
 
 export interface OverlayModel {
@@ -6,7 +5,7 @@ export interface OverlayModel {
 
   getData(): any;
 
-  afterClose(): Observable<any>;
+  afterClose(): Promise<any>;
 
   close(e?): void;
 }

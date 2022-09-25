@@ -1,9 +1,9 @@
 import { ComponentFactory, ComponentFactoryResolver, inject, Injectable, Injector } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { NgvBottomSheetOptionModel,NgvRoutesConfig,TemplateCarrierType,OverlayModel  } from '../models';
+import { NgvBottomSheetOptionModel, NgvRoutesConfig, OverlayModel, TemplateCarrierType } from '../models';
 import { NgvBottomSheetComponent } from '../components/ngv-bottom-sheet/ngv-bottom-sheet.component';
-import { NGV_BOTTOM_SHEET_TEMPLATE_TOKEN, NGV_BOTTOM_SHEET_CLOSE_TOKEN ,NGV_BOTTOM_SHEET_ROUTES_TOKEN } from '../classes';
+import { NGV_BOTTOM_SHEET_CLOSE_TOKEN, NGV_BOTTOM_SHEET_ROUTES_TOKEN, NGV_BOTTOM_SHEET_TEMPLATE_TOKEN } from '../classes';
 
 @Injectable({
   providedIn: 'root'
@@ -78,8 +78,15 @@ export class NgvBottomSheet implements OverlayModel {
     return this.templateBridge$.getValue().options.data;
   }
 
-  afterClose(): Observable<any> {
-    return this.afterClose$.asObservable();
+  afterClose(): Promise<any> {
+    // because of that subject and observables able to send multiple values
+    // we must use promise limit
+    // so , don't use subject.asObservable
+    return new Promise((resolve) => {
+      this.afterClose$.subscribe(res => {
+        resolve(res);
+      });
+    });
   }
 
   close(e?): void {
@@ -139,7 +146,7 @@ export class NgvBottomSheet implements OverlayModel {
     this.routesConfig.list.map(route => {
       this.transformedFragments[route.fragment] = {
         component: route.component,
-        option: {...defaultOption , ...userConfig}
+        option: {...defaultOption, ...userConfig}
       };
     });
   }

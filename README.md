@@ -61,7 +61,7 @@ this.bottomSheet.open(MyExampleComponent, {
 * you can close bottom sheet by use `close('your message')` that could be any type and send a message to close subscriber.
 
 ```ts
-this.bottomSheet.open(MyExampleComponent).afterClose().subscribe(closeMessage => {
+this.bottomSheet.open(MyExampleComponent).afterClose().then(closeMessage => {
   // there will got 'my close message could be any type'
 })
 
