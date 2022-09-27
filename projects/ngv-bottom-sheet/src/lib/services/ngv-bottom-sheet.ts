@@ -1,8 +1,8 @@
 import { ComponentFactory, ComponentFactoryResolver, inject, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { NgvBottomSheetOptionModel, NgvRoutesConfig, OverlayModel, TemplateCarrierType } from '../models';
 import { NgvBottomSheetComponent } from '../components/ngv-bottom-sheet/ngv-bottom-sheet.component';
+import { NgvBottomSheetOptionModel, NgvRoutesConfig, OpenedBottomSheetModel, OverlayModel, TemplateCarrierType } from '../models';
 import { NGV_BOTTOM_SHEET_CLOSE_TOKEN, NGV_BOTTOM_SHEET_ROUTES_TOKEN, NGV_BOTTOM_SHEET_TEMPLATE_TOKEN } from '../classes';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class NgvBottomSheet implements OverlayModel {
   private afterClose$: Subject<any> = new Subject();
 
   // list of custom elements that is open
-  private componentsOpenedNameList: string[] = [];
+  private componentsOpenedNameList: OpenedBottomSheetModel[] = [];
 
   /**
    * ---------------------------------------------------------------------------------------------------------------------------------------
@@ -64,11 +64,11 @@ export class NgvBottomSheet implements OverlayModel {
     this.openAutomationByRoutes();
   }
 
-  open(component: any, options: NgvBottomSheetOptionModel = {backDropClose: true, backDropStyle: 'blur'}): this {
+  open(component: any, options: NgvBottomSheetOptionModel = {backDropClose: true, backDropStyle: 'blur'}, byFragment = false): this {
     // make it empty , use case: when we have two sheets open and last sheet carrying last data options and components
     this.templateBridge$.next(null);
     // create basic of load sheet
-    const componentName = this.init();
+    const componentName = this.init(byFragment);
     // tell bridge what component u should load inside of sheet by what options
     this.templateBridge$.next({component, options, componentName});
     return this;
@@ -90,13 +90,13 @@ export class NgvBottomSheet implements OverlayModel {
   }
 
   close(e?): void {
-    // get name of last custom element is opened
-    const componentUniqueIdentifier = this.componentsOpenedNameList.pop();
-
-    const sheetComponent = document.getElementById(componentUniqueIdentifier + '-content');
+    // get last custom element is opened
+    const lastComponent = this.componentsOpenedNameList.pop();
+    const sheetComponent = document.getElementById(lastComponent.name + '-content');
     if (!sheetComponent) {
       return;
     }
+
     // make close animation for 200ms after that remove anything down here
     sheetComponent.style.transition = '200ms linear all';
     sheetComponent.style.bottom = `${sheetComponent.scrollHeight * -1}px`;
@@ -105,21 +105,28 @@ export class NgvBottomSheet implements OverlayModel {
     setTimeout(() => {
       // tell user what's ur data after close
       this.afterClose$.next(e);
+
       // clear bridge
       this.templateBridge$.next(null);
-      const el = document.getElementsByTagName(componentUniqueIdentifier)[0];
+      const el = document.getElementsByTagName(lastComponent.name)[0];
+
       // remove factory holder and dummy element
       el?.remove();
+      this.factory = null;
       if (!this.componentsOpenedNameList.length) {
         document.body.style.overflow = 'visible';
       }
-      this.factory = null;
+
+      // here we will check if bottom sheet opened by fragment we will remove that
+      if (lastComponent.byFragment) {
+        this.removeFragment();
+      }
     }, 200);
   }
 
-  private init(): string {
+  private init(byFragment): string {
     const name = 'ngv-sheet-container-' + Math.floor(Math.random() * 100000);
-    this.componentsOpenedNameList.push(name);
+    this.componentsOpenedNameList.push({name, byFragment});
     // make a dummy element
     const el = document.createElement(name);
     // push dummy to body
@@ -154,8 +161,12 @@ export class NgvBottomSheet implements OverlayModel {
   private openSheetWhenFragmentMatches(): void {
     this.router.fragment.subscribe(fragment => {
       if (this.transformedFragments.hasOwnProperty(fragment)) {
-        this.open(this.transformedFragments[fragment].component, this.transformedFragments[fragment].option);
+        this.open(this.transformedFragments[fragment].component, this.transformedFragments[fragment].option, true);
       }
     });
+  }
+
+  removeFragment(): void {
+    window.location.hash = '';
   }
 }
