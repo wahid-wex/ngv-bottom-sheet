@@ -2,6 +2,16 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.1.
 
+## Why do we must use Ngv Bottom sheet ?
+
+* it's open source.
+* you can open bottom sheet by routes and service that we provided before ...
+* you can set attributes like clickable back-drop etc .
+* you don't need to add any component tag in your code .
+* you will use just a service to work with package and nothing else .
+* you can swipe down your bottom sheet to close.
+
+
 ## How to use ?
 
 
@@ -11,9 +21,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ```ts
 import { NgvBottomSheetModule } from 'ngv-bottom-sheet';
 imports: [
-    ...
+  ...
     NgvBottomSheetModule,
-    ...
+  ...
 ]
 ```
 
@@ -66,7 +76,7 @@ this.bottomSheet.open(MyExampleComponent).afterClose().then(closeMessage => {
 })
 
 // and in the MyExampleComponent you can close it
- closeAction(): void {
+closeAction(): void {
   this.bottomsheet.close('my close message could be any type')
 }
 ```
@@ -83,7 +93,7 @@ export class MyExampleComponent implements OnInit {
   bottomSheet = inject(NgvBottomSheet);
   ngOnInit(): void {
     const data = this.bottomSheet.getData();
-    ...
+  ...
   }
 }
 ```
@@ -94,7 +104,7 @@ export class MyExampleComponent implements OnInit {
 ```ts
 import { NgvBottomSheetModule } from 'ngv-bottom-sheet';
 imports: [
-    ...
+  ...
     NgvBottomSheetModule.setRoutes({
       options : {
         backDropClose: true,
@@ -112,7 +122,7 @@ imports: [
         },
       ],
     }),
-    ...
+  ...
 ]
 ```
 * so when you want to open `MyExampleComponent` you just need to add `example` fragment ...
